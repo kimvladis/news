@@ -14,6 +14,7 @@ class Events extends Component
     /**
      * Method for adding new event.
      *
+     * @todo class name validation
      * @param string $class class that triggers event
      * @param string $eventName
      */

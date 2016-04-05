@@ -21,28 +21,24 @@ class UserTest extends TestCase
      */
     public function testCreateUser()
     {
+        error_reporting(E_ALL);
+        ini_set('display_errors', 1);
         $user = new DbUser();
         $user->sendVerificationEmail = false;
         $user->save();
 
-        $this->specify('user can not created without email', function () use ($user) {
-            expect('error message should be set', $user->errors)->hasKey('email');
-        });
+        $this->assertArrayHasKey('email', $user->errors, 'error message should be set');
 
         $user->email = 'demo@demo.com';
         $user->save();
 
-        $this->specify('user created', function () use ($user) {
-            expect('user id can not be null', $user->id)->notNull();
-            expect('user should be not verified', $user->verified)->equals(0);
-        });
+        $this->assertNotNull($user->id, 'user id can not be null');
+        $this->assertEquals(0, $user->verified, 'user should be not verified');
 
         $user->verify();
 
-        $this->specify('user verified', function () use ($user) {
-            expect('user should be verified', $user->verified)->equals(1);
-            expect('user should have access to create article', \Yii::$app->authManager->checkAccess($user->id, 'createArticle'))->true();
-        });
+        $this->assertEquals(1, $user->verified, 'user should be verified');
+        $this->assertFalse(\Yii::$app->authManager->checkAccess($user->id, 'createArticle'), 'user should have not access to create article');
 
         $user->delete();
     }
