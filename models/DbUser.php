@@ -2,7 +2,10 @@
 
 namespace app\models;
 
+use app\components\Renderable;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 use yii\web\IdentityInterface;
 
 /**
@@ -21,7 +24,7 @@ use yii\web\IdentityInterface;
  *
  * @method static DbUser|null findOne($condition)
  */
-class DbUser extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+class DbUser extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface, Renderable
 {
     /**
      * @var bool if true sends confirmation email
@@ -167,9 +170,12 @@ class DbUser extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         }
 
         $this->verified = 1;
-        $auth = Yii::$app->authManager;
-        $author = $auth->getRole('author');
-        $auth->assign($author, $this->id);
+
+        /** set default user role
+         * $auth = Yii::$app->authManager;
+         * $author = $auth->getRole('author');
+         * $auth->assign($author, $this->id);
+         */
 
         return $this->save();
     }
@@ -215,5 +221,45 @@ class DbUser extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public static function findByUsername($username)
     {
         return self::findOne(['email' => $username]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getTemplateParams()
+    {
+        return [
+            'id'   => function (DbUser $model) {
+                return $model->id;
+            },
+            'name' => function (DbUser $model) {
+                return $model->name;
+            },
+        ];
+    }
+
+    /**
+     * Returns count of user notifications
+     *
+     * @return int|string
+     */
+    public function getNotificationsCount()
+    {
+        return UserNotification::find()->where(['to' => $this->getId(), 'notified' => 0])->count();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class'              => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => false,
+                'value'              => new Expression('NOW()'),
+            ],
+        ];
     }
 }

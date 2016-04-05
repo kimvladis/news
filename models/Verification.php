@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "verification".
@@ -55,5 +57,20 @@ class Verification extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(DbUser::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class'              => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => false,
+                'value'              => new Expression('NOW()'),
+            ],
+        ];
     }
 }

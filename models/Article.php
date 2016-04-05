@@ -2,7 +2,12 @@
 
 namespace app\models;
 
+use app\components\Renderable;
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use yii\helpers\StringHelper;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
 
 /**
@@ -17,7 +22,7 @@ use yii\web\UploadedFile;
  *
  * @property DbUser  $author
  */
-class Article extends \yii\db\ActiveRecord
+class Article extends \yii\db\ActiveRecord implements Renderable
 {
     /**
      * @var UploadedFile
@@ -103,5 +108,38 @@ class Article extends \yii\db\ActiveRecord
         }
 
         return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getTemplateParams()
+    {
+        return [
+            'title'     => function (Article $data) {
+                return $data->title;
+            },
+            'shortText' => function (Article $data) {
+                return StringHelper::truncateWords($data->content, 50);
+            },
+            'url'       => function (Article $data) {
+                return Url::to(['article/view', 'id' => $data->id], true);
+            },
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class'              => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => false,
+                'value'              => new Expression('NOW()'),
+            ],
+        ];
     }
 }

@@ -26,6 +26,18 @@ AppAsset::register($this);
 
 <div class="wrap">
     <?php
+    $items = [
+        ['label' => 'Sign up', 'url' => ['/site/signup'], 'visible' => Yii::$app->user->isGuest],
+        ['label' => 'My articles', 'url' => ['/article/index'], 'visible' => Yii::$app->user->can('createArticle')],
+        ['label' => 'Notification manager', 'url' => ['/notification/index'], 'visible' => Yii::$app->user->can('createNotification')],
+        Yii::$app->user->isGuest ? (
+        ['label' => 'Login', 'url' => ['/site/login']]
+        ) : (['label' => 'Logout (' . Yii::$app->user->identity->name . ')', 'url' => ['/site/logout']]),
+    ];
+    if (!Yii::$app->user->isGuest) {
+        $count = Yii::$app->user->identity->getNotificationsCount();
+        $items = ['<li><a href="/notification/my">Notifications' . (($count > 0) ? (' <span class="badge">'.$count.'</span>') : '') . '</a></li>'] + $items;
+    }
     NavBar::begin(
         [
             'brandLabel' => 'News',
@@ -37,13 +49,7 @@ AppAsset::register($this);
     echo Nav::widget(
         [
             'options' => ['class' => 'navbar-nav navbar-right'],
-            'items'   => [
-                ['label' => 'Sign up', 'url' => ['/site/signup'], 'visible' => Yii::$app->user->isGuest],
-                ['label' => 'My articles', 'url' => ['/article/index'], 'visible' => !Yii::$app->user->isGuest],
-                Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-                ) : (['label' => 'Logout (' . Yii::$app->user->identity->name . ')', 'url' => ['/site/logout']]),
-            ],
+            'items'   => $items,
         ]);
     NavBar::end();
     ?>

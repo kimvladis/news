@@ -6,7 +6,10 @@ $config = [
     'id' => 'news',
     'name' => 'News',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        'app\components\EventsBootstrap',
+    ],
     'components' => [
         'request' => [
             'baseUrl' => '',
@@ -38,9 +41,12 @@ $config = [
                 'port'       => '465',
                 'smtpsecure' => 'ssl',
                 'smtpauth'   => true,
-                'username'   => 'username',
-                'password'   => 'password',
+                'username'   => 'kimvladis@gmail.com',
+                'password'   => 'vdbhgmlG',
             ],
+        ],
+        'events' => [
+            'class' => 'app\components\Events',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -79,10 +85,10 @@ if (YII_ENV_DEV) {
         'class' => 'yii\debug\Module',
     ];
 
-//    $config['bootstrap'][] = 'gii';
-//    $config['modules']['gii'] = [
-//        'class' => 'yii\gii\Module',
-//    ];
+    $config['bootstrap'][] = 'gii';
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',
+    ];
 }
 
 return $config;

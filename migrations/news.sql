@@ -30,7 +30,6 @@ CREATE TABLE `vk_news`.`article`
 
 CREATE TABLE `vk_news`.`verification`
 (
-  `id`         INT PRIMARY KEY AUTO_INCREMENT,
   `user_id`    INT,
   `key`        VARCHAR(255),
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

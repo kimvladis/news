@@ -86,7 +86,11 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect('article/index');
+            if (Yii::$app->user->can('createArticle')) {
+                return $this->redirect('article/index');
+            } else {
+                return $this->redirect('notification/my');
+            }
         }
 
         return $this->render('login', [
@@ -140,7 +144,11 @@ class SiteController extends Controller
                 if ($user->verify()) {
                     Yii::$app->user->login($user, 0);
 
-                    return $this->redirect('article/index');
+                    if (Yii::$app->user->can('createArticle')) {
+                        return $this->redirect('article/index');
+                    } else {
+                        return $this->redirect('notification/my');
+                    }
                 }
             }
 
@@ -161,24 +169,6 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
-
-    /**
-     * Rbac init action
-     */
-//    public function actionInitRbac()
-//    {
-//        $auth = Yii::$app->authManager;
-//
-//        // add "createPost" permission
-//        $createPost = $auth->createPermission('createArticle');
-//        $createPost->description = 'Create a post';
-//        $auth->add($createPost);
-//
-//        // add "author" role and give this role the "createPost" permission
-//        $author = $auth->createRole('author');
-//        $auth->add($author);
-//        $auth->addChild($author, $createPost);
-//    }
 
     /**
      * RSS link
@@ -238,5 +228,23 @@ class SiteController extends Controller
                 ],
             ]
         );
+    }
+
+    public function actionEvents()
+    {
+        var_dump(Yii::$app->events->getAll());
+//        Yii::$app->events->add();
+//        Yii::$app->init()
+//        $article = new Article();
+////        $c = new Component();
+////        $getEvents = function (Article $a) {
+////            return $a->_events;
+////        };
+////        $getEvents = \Closure::bind($getEvents, null, $article);
+//
+//        $sweetsThief = new \ReflectionProperty('yii\base\Component', '_events');
+//        $sweetsThief->setAccessible(true);
+//
+//        var_dump($sweetsThief->getValue($article));
     }
 }
