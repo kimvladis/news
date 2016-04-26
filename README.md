@@ -3,9 +3,7 @@ News Yii2
 
 Task time: about 20 hours. <br />
 CV: [https://linkedin.com/in/kimvladis](https://linkedin.com/in/kimvladis) <br />
-Demo: [http://news.vladislav.kim](http://news.vladislav.kim) <br />
-login: admin <br />
-password: 1234
+Demo: [http://vladislav.kim](http://vladislav.kim) <br />
 
 CONFIGURATION
 -------------

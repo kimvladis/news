@@ -4,7 +4,7 @@ $params = require(__DIR__ . '/params.php');
 
 $config = [
     'id' => 'news',
-    'name' => 'News',
+    'name' => 'Vladislav Kim',
     'basePath' => dirname(__DIR__),
     'bootstrap' => [
         'log',
