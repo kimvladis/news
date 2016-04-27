@@ -27,12 +27,9 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     $items = [
-        ['label' => 'Sign up', 'url' => ['/site/signup'], 'visible' => Yii::$app->user->isGuest],
         ['label' => 'My articles', 'url' => ['/article/index'], 'visible' => Yii::$app->user->can('createArticle')],
         ['label' => 'Notification manager', 'url' => ['/notification/index'], 'visible' => Yii::$app->user->can('createNotification')],
-        Yii::$app->user->isGuest ? (
-        ['label' => 'Login', 'url' => ['/site/login']]
-        ) : (['label' => 'Logout (' . Yii::$app->user->identity->name . ')', 'url' => ['/site/logout']]),
+        ['label' => 'Logout (' . Yii::$app->user->identity->name . ')', 'url' => ['/site/logout'], 'visible' => Yii::$app->user->can('createArticle')]
     ];
     if (!Yii::$app->user->isGuest) {
         $count = Yii::$app->user->identity->getNotificationsCount();
@@ -40,7 +37,7 @@ AppAsset::register($this);
     }
     NavBar::begin(
         [
-            'brandLabel' => 'News',
+            'brandLabel' => 'Vladislav Kim',
             'brandUrl'   => Yii::$app->homeUrl,
             'options'    => [
                 'class' => 'navbar-inverse navbar-fixed-top',
@@ -66,8 +63,6 @@ AppAsset::register($this);
 <footer class="footer">
     <div class="container">
         <p class="pull-left">&copy; <?= Yii::$app->name ?> <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
     </div>
 </footer>
 
